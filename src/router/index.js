@@ -7,9 +7,14 @@ Vue.use(Router);
 export default new Router({
     routes: [
         {
-            path: '/',
-            name: 'HelloWorld',
-            component: HelloWorld
+            path: '/orderSuccess',
+            name: 'orderSuccess',
+            component: orderSuccess
+        },
+        {
+            path: '/order/:resid/tableid',
+            name: 'order',
+            component: order
         }
     ]
 });
