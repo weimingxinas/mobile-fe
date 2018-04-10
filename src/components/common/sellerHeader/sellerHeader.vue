@@ -1,6 +1,6 @@
 <!-- 商家模块头部 组件 -->
 <template>
-  <div class="seller_header" v-if="seller">
+  <div class="sellerHeader" v-if="seller">
       <!-- 主要内容：左侧头像、右侧描述 -->
       <div class="content-wrapper"> 
           <div class="avatar">
@@ -87,31 +87,31 @@
 <script>
 export default{
     components: {},
-    data(){
+    data () {
         return {
-            detailShow:false,
-            classMap:['decrease','discount','special','invoice','guarantee']
-        }
+            detailShow: false,
+            classMap: ['decrease', 'discount', 'special', 'invoice', 'guarantee']
+        };
     },
     props: {
-        seller:{
-            type:Object
+        seller: {
+            type: Object
         }
     },
-    watch:{},
-    methods:{
-        back(){
+    watch: {},
+    methods: {
+        back () {
             this.$router.push({
-                path:'/index'
-            })
+                path: '/index'
+            });
         }
     },
-    filters:{},
-    computed:{},
-    created() {},
-    mounted() {},
-    destroyed() {}
-}
+    filters: {},
+    computed: {},
+    created () {},
+    mounted () {},
+    destroyed () {}
+};
 </script>
 <style>
 .seller-header{

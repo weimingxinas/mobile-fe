@@ -2,7 +2,7 @@ import Vue from 'vue';
 import Router from 'vue-router';
 import orderSuccess from '@/components/ordersuccess';
 import order from '@/components/order';
-import seller_header from '@/components/common/seller-header/seller_header';
+import sellerHeader from '@/components/common/sellerHeader/sellerHeader';
 
 Vue.use(Router);
 
@@ -19,9 +19,9 @@ export default new Router({
             component: order
         },
         {
-            path: '/seller_header',
-            name: 'seller_header',
-            component: seller_header
+            path: '/sellerHeader',
+            name: 'sellerHeader',
+            component: sellerHeader
         }
     ]
 });
