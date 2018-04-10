@@ -5,7 +5,7 @@
   </div>
 </template>
 <script>
-import seller_header from '@/components/common/seller-header/seller_header'
+import seller_header from '@/components/common/seller-header/seller_header';
 export default {
      name: 'App',
      components: {
