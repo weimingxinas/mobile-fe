@@ -1,6 +1,6 @@
 <!-- 商家模块头部 组件 -->
 <template>
-  <div class="seller-header" v-if="seller">
+  <div class="seller_header" v-if="seller">
       <!-- 主要内容：左侧头像、右侧描述 -->
       <div class="content-wrapper"> 
           <div class="avatar">

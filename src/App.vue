@@ -5,9 +5,13 @@
   </div>
 </template>
 <script>
+import seller_header from '@/components/common/seller-header/seller_header'
 export default {
-    components: {},
-    name: 'App'
+     name: 'App',
+     components: {
+      seller_header
+    }
+   
 };
 </script>
 
