@@ -1,7 +1,7 @@
 <template>
   <div class="order">
      <!-- 商家模块头部 -->
-     
+     <seller-header :seller="seller"></seller-header>
      <div class="tab">
        <div class="tab-item">
          <router-link to="">点菜</router-link>
@@ -13,7 +13,10 @@
          <router-link to="">商家</router-link>
        </div>
      </div>
-      
+
+     <keep-alive>
+       <router-view :seller="seller"></router-view>
+     </keep-alive>      
   </div>
 </template>
 <script>
@@ -31,18 +34,5 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-h1, h2 {
-  font-weight: normal;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
-}
+
 </style>
