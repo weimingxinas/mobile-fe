@@ -86,7 +86,7 @@
 </template>
 <script>
 export default{
-    components:{ },
+    components: {},
     data(){
         return {
             detailShow:false,

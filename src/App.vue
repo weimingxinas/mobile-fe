@@ -6,7 +6,7 @@
 </template>
 <script>
 export default {
-    components:{},
+    components: {},
     name: 'App'
 };
 </script>
