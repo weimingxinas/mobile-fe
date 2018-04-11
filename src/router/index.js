@@ -1,8 +1,7 @@
 import Vue from 'vue';
 import Router from 'vue-router';
-import orderSuccess from '@/components/ordersuccess';
-import order from '@/components/order';
-import sellerHeader from '@/components/common/sellerHeader/sellerHeader';
+import orderSuccess from '@/views/ordersuccess';
+import order from '@/views/order';
 
 Vue.use(Router);
 
@@ -17,11 +16,6 @@ export default new Router({
             path: '/order/:resid/tableid',
             name: 'order',
             component: order
-        },
-        {
-            path: '/sellerHeader',
-            name: 'sellerHeader',
-            component: sellerHeader
         }
     ]
 });

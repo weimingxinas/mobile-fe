@@ -1,15 +1,15 @@
 <template>
   <div id="app">
-    <sellerHeader></sellerHeader>
-    
+    <order></order>
+    <p>woOO</p>   
   </div>
 </template>
 <script>
-import sellerHeader from '@/components/common/sellerHeader/sellerHeader';
+import order from '@/views/order';
 export default {
     name: 'App',
     components: {
-        sellerHeader
+        order
     }
 };
 </script>
