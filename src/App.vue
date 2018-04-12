@@ -1,7 +1,6 @@
 <template>
   <div id="app">
-    <order></order>
-    <p>woOO</p>   
+    <order></order> 
   </div>
 </template>
 <script>
@@ -19,7 +18,6 @@ export default {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
   color: #2c3e50;
   
 }

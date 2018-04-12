@@ -4,54 +4,51 @@
     <div class="sellerHeader">
         <!-- 主要内容：左侧头像、右侧描述 -->
         <div class="contentWrapper"> 
-            <div class="sellerLogo">
-                <img src="http://adminsub.soupu.com/upload/editor/2016/12/2016122009502862_y.jpg">
+            <div class="sellerLogo">  
+                <img v-bind:src="logoimg"/>             
             </div>
             <div class="content">
-                <div class="title">
-                    <span>深圳麦当劳红荔西路餐厅</span>
-                </div>
-                <div class="description">
-                    <span>欢迎光临，很高兴为你服务~</span>
-                </div>
+                <h3 id="shopName">深圳麦当劳红荔西路餐厅</h3>
+                <span>欢迎光临，很高兴为你服务~</span>
 
-                <!-- 活动 -->
+                <!-- 评价 -->
                 <div class="supports">
                   <li v-for="">
                     <span class="text">{{  }}</span>
                   </li>
                 </div>
             </div>
+            
         </div>
-
-        <!-- 公告 -->
-        <div class="bulletin-wrapper" @click="detailShow = true">
+    </div>
+    <!-- 公告 -->
+    <div class="notice">
+        <div class="bulletinWrapper" @click="detailShow = true">
             <span class="brand"></span>
             <span class="text">{{  }}</span>
             <i class="icon-keyboard_arrow_right"></i>
         </div>
 
         <!-- 背景 -->
-        <div class="background">
-            <img :src="seller.avatar">
+        <div class="background">       
         </div>
 
         <!-- 浮层详情 -->
         <transition name="fade">
             <div class="detail" v-show="detailShow">
-                <div class="detail-wrapper clearfix">
+                <div class="detailWrapper clearfix">
                     <div class="detail-main">
-                        <h1 class="name">{{ seller.name }}</h1>
+                        <h1 class="name">深圳麦当劳红荔西路餐厅</h1>
                         <div class="title">
                             <div class="line"></div>
                             <div class="text">优惠信息</div>
                             <div class="line"></div>
                         </div>
 
-                        <ul class="detail-supports" v-if="seller.supports">
-                            <li class="supports-item" v-for="(item,index) in seller.supports">
-                                <span class="icon" :class="classMap[seller.supports[index].type]"></span>
-                                <span class="text">{{ seller.supports[index].description }}</span>
+                        <ul class="detail-supports">
+                            <li class="supports-item" v-for="">
+                                <span class="icon"></span>
+                                <span class="text"></span>
                             </li>
                         </ul>
 
@@ -62,7 +59,7 @@
                         </div>
 
                         <div class="detail-text">
-                            <p class="text">{{ seller.bulletin }}</p>
+                            <p class="text"></p>
                         </div>
                     </div>
                 </div>
@@ -79,15 +76,11 @@
         </div>
     </div>
     <div class="tab">
-      <div class="tab-item">
-        <router-link to="">点菜</router-link>
-      </div>
-      <div class="tab-item">
-        <router-link to="">评价</router-link>
-      </div>
-      <div class="tab-item">
-        <router-link to="">商家</router-link>
-      </div>
+      <el-tabs>
+              <el-tab-pane><router-link to="">点菜</router-link></el-tab-pane>
+              <el-tab-pane><router-link to="">评价</router-link></el-tab-pane>
+              <el-tab-pane><router-link to="">商家</router-link></el-tab-pane>
+      </el-tabs>
     </div>
 
     <keep-alive>
@@ -101,6 +94,7 @@ export default {
     components: {},
     data () {
         return {
+            logoimg: '/static/img/logo.jpg',
             detailShow: false,
             classMap: ['decrease', 'discount', 'special', 'invoice', 'guarantee']
         };
@@ -133,18 +127,17 @@ export default {
     height: 100px;
     position: relative;
     color:#fff;
-    line-height: 1;
-    font-size: 13px;
     font-weight: 200;
     overflow: hidden;
     background-color: rgba(7,17,27,0.5);
 }
 .contentWrapper {
     position: relative;
-    padding: 24px 12px 18px 24px;
-    font-size: 0;
+    float: left;
+    padding: 32px 12px 18px 24px;
 }
 .sellerLogo {
+    position: relative;
     float: left;
     width: 64px;
     height: 64px;
@@ -157,11 +150,27 @@ export default {
     border-radius: 2px;
 }
 .content {
-    display: inline-block;
-    margin-left: 16px;
+    position: relative;
+    float: right;
+    margin-left: 10px;
+    height: 64px;
+    width: 200px;
+
 }
-.content title {
+#shopName {
+    margin:0 4px 4px 0;
+    float: left;
+    font-size: 16px;
+}
+span {
     margin:2px 0 8px 0;
+    font-size: 10px;
+
+}
+.notice{
+    width: 100%;
+    height: 20px;
+    position: relative;
 }
 .content brand {
     width: 30px;
@@ -170,5 +179,18 @@ export default {
     vertical-align: top;
     background-size: 30px 18px;
     background-repeat: no-repeat;
+}
+.tab{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+}
+.tabItem {
+    float: left;
+    text-align:center;
+
 }
 </style>
