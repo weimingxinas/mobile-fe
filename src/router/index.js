@@ -13,7 +13,7 @@ export default new Router({
             component: orderSuccess
         },
         {
-            path: '/order/:resid/tableid',
+            path: '/order/:resid/:tableid',
             name: 'order',
             component: order
         }

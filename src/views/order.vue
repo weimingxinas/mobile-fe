@@ -134,7 +134,7 @@
 </template>
 <script>
 import { MessageBox } from 'mint-ui';
-import axios from 'axios';
+import api from '@/api';
 export default {
     name: 'order',
     components: {},
@@ -208,18 +208,10 @@ export default {
         }
     },
     created () {
-        axios.get('https://www.easy-mock.com/mock/5acb17c501cfb12e35c2cf78/api/food')
-            .then(response => {
-                console.log(response);
-                this.typeFood = response.data;
-            })
-            .catch(error => {
-                console.log(error);
-                alert('网络不可用');
-            });
-    },
-    mounted () {},
-    destroyed () {}
+        api.getFoodList().then(res => {
+            console.log(res);
+        }).catch();
+    }
 };
 </script>
 
