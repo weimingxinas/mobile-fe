@@ -5,16 +5,16 @@
         <!-- 主要内容：左侧头像、右侧描述 -->
         <div class="contentWrapper"> 
             <div class="sellerLogo">  
-                <img v-bind:src="logoimg"/>             
+                <img src="/static/img/logo.jpg"/>             
             </div>
-            <div class="content">
+            <div class="contents">
                 <h3 id="shopName">深圳麦当劳红荔西路餐厅</h3>
                 <span>欢迎光临，很高兴为你服务~</span>
 
                 <!-- 评价 -->
                 <div class="supports">
-                  <li v-for="">
-                    <span class="text">{{  }}</span>
+                  <li v-for="words in evaluate">
+                    <span class="text">{{ words.word }}</span>
                   </li>
                 </div>
             </div>
@@ -24,9 +24,9 @@
     <!-- 公告 -->
     <div class="notice">
         <div class="bulletinWrapper" @click="detailShow = true">
-            <span class="brand"></span>
-            <span class="text">{{  }}</span>
-            <i class="icon-keyboard_arrow_right"></i>
+            <span class="brand"><i class="icon iconfont icon-zhekouqia"></i></span>
+            <span class="text">折扣商品0.85折起</span>
+            <span class="selection"><i class="icon iconfont icon-xiangxiazhankai"></i></span>
         </div>
 
         <!-- 背景 -->
@@ -40,22 +40,22 @@
                     <div class="detail-main">
                         <h1 class="name">深圳麦当劳红荔西路餐厅</h1>
                         <div class="title">
-                            <div class="line"></div>
-                            <div class="text">优惠信息</div>
-                            <div class="line"></div>
+                            <div class="leftline"></div>
+                            <div class="samlltitle">优惠信息</div>
+                            <div class="rightline"></div>
                         </div>
 
                         <ul class="detail-supports">
-                            <li class="supports-item" v-for="">
-                                <span class="icon"></span>
-                                <span class="text"></span>
+                            <li class="supports-item" v-for="discount in discounts">
+                                <span class="icon"><i class="discount.img"></i></span>
+                                <span class="text">{{ discount.detail}}</span>
                             </li>
                         </ul>
 
                         <div class="title">
-                            <div class="line"></div>
-                            <div class="text">商家公告</div>
-                            <div class="line"></div>
+                            <div class="leftline2"></div>
+                            <div class="smalltitle">商家公告</div>
+                            <div class="rightline"></div>
                         </div>
 
                         <div class="detail-text">
@@ -65,7 +65,7 @@
                 </div>
 
                 <div class="detail-close" @click="detailShow = false">
-                    <i class="icon-arrow_lift"></i>
+                    <i class="icon iconfont icon-guanbi"></i>
                 </div>
             </div>
         </transition>
@@ -91,17 +91,31 @@
     <hr>
     <div class="foodItem">
         <div class="leftNav">
-            <ul id="meum">
-                <li v-for="name in typeFood">                   
-                    <span>{{ name.typeName }}</span>
+            <ul>
+                <li class="meun"v-for="(name,index) in typeFood" @click="show(name, index)"  :class="{'active': isActive === index}">                   
+                    <span>{{ name.type_name }}</span>
                 </li>
             </ul>
         </div>
         <div class="foodlist">
-            <ul class="food">
-                <li v-for="foodname in foodDetail">
-                    <span></span>
-                    <span>{{ foodname.name}}</span>
+            <ul class="foodul">
+                <li class="food" v-for="foodname in renderFoodDetail">
+                    <div class="picture">
+                        <img src=''>
+                    </div>
+                    <div class="foodcontent">
+                        <h2 class="foodname">{{ foodname.c_name }}</h2>                            
+                        <div class="extra">
+                            <span class="sellcount">月售200份</span>
+                            <span class="rating">好评率93%</span>
+                        </div>
+                        <div class="piece">
+                            <span class="now">￥{{ foodname.piece }}</span>
+                        </div>
+                        <div class="control">
+
+                        </div>
+                    </div>
                 </li>
             </ul>
         </div>
@@ -140,10 +154,31 @@ export default {
     components: {},
     data () {
         return {
-            logoimg: '/static/img/logo.jpg',
+            logoimg: '',
             detailShow: false,
+            isActive: 0,
+            evaluate: [{
+                word: '"服务好"'
+            }, {
+                word: '"质量好"'
+            }, {
+                word: '"包装好"'
+            }],
+            discounts: [{
+                img: 'icon iconfont icon-zhekouqia',
+                detail: '折扣商品0.85折起'
+            }, {
+                img: 'icon iconfont icon-manjian',
+                detail: '满25减2'
+            }, {
+                img: 'icon iconfont icon-huodongyouxian',
+                detail: '本店所有优惠不可叠加使用'
+            }],
             typeFood: [],
-            foodDetail: []
+            // all data
+            foodDetail: [],
+            // render data
+            renderFoodDetail: []
         };
     },
     props: {
@@ -173,34 +208,41 @@ export default {
                 path: '/index'
             });
         },
+        show (name, index) {
+            // this.foodDetail.map(val => {
+            //     if (name.type_id === val.type_id) {
+            //         console.log(this);
+            //         this._foodDetail.push(val);
+            //     }
+            // });
+            const renderFoodDetail = this.foodDetail.filter(val => name.type_id === val.type_id);
+            this.renderFoodDetail = renderFoodDetail;
+            this.isActive = index;
+        },
         pay () {
-            let _this = this;
-            MessageBox.confirm(`您共需支付 ${_this.totalPrice} 元`, '结算');
+            MessageBox.confirm(`您共需支付 ${this.totalPrice} 元`, '结算');
         }
     },
     filters: {},
     computed: {
         totalPrice () {
-            let _this = this;
             let total = 0;
-            _this.selectFoods.forEach((food) => {
+            this.selectFoods.forEach((food) => {
                 total += food.price * food.count;
             });
             return total;
         },
         // 所选商品总数量
         count () {
-            let _this = this;
             let total = 0;
-            _this.selectFoods.forEach((food) => {
+            this.selectFoods.forEach((food) => {
                 total += food.count;
             });
             return total;
         },
         // 20元起送 、 还差10元起送 、 去结算
         payDesc () {
-            let _this = this;
-            if (_this.totalPrice === 0) {
+            if (this.totalPrice === 0) {
                 return `10元起送`;
             } else {
                 return '去结算';
@@ -208,9 +250,22 @@ export default {
         }
     },
     created () {
-        api.getFoodList().then(res => {
-            console.log(res);
-        }).catch();
+        Promise.all([
+            api.getFoodList().then(res => {
+                if (res.data.status === 200) {
+                    this.foodDetail = res.data.data;
+                }
+            }),
+            api.getFoodType().then(res => {
+                if (res.data.status === 200) {
+                    this.typeFood = res.data.data;
+                }
+            })
+        ]).then(_ => {
+            this.show(this.typeFood[0], this.isActive);
+        });
+        console.log(this.$route);
+        console.log(this);
     }
 };
 </script>
@@ -244,21 +299,32 @@ export default {
     height: 64px;
     border-radius: 2px;
 }
-.content {
+.brand i {
+    color: rgb(200, 130, 214);  
+}
+.selection{
+    float: right;
+    margin-right: 10px;
+}
+.contents {
     position: relative;
     float: right;
-    margin-left: 10px;
     height: 64px;
     width: 200px;
-
+}
+.supports li {
+    list-style-type: none;
+    float: left;
+    width: 25%;
+    margin-left: 10px;
 }
 #shopName {
-    margin:0 4px 4px 0;
+    margin:0 4px 4px 6px;
     float: left;
     font-size: 16px;
 }
 span {
-    margin:2px 0 8px 0;
+    margin:2px 0 8px 6px;
     font-size: 10px;
 
 }
@@ -266,6 +332,79 @@ span {
     width: 100%;
     height: 20px;
     position: relative;
+}
+.detail {
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    position: fixed;
+    z-index: 100;
+    overflow: auto;
+    background-color: rgba(7,17,27,.8);
+    color: white;
+}
+.detail-main {
+    text-align: center;
+    padding-top: 64px;
+    padding-bottom: 64px;
+}
+.name {
+    font-weight: 700;
+    font-size: 16px;
+    line-height: 16px;
+}
+.title {
+    width: 80%;
+    margin: 28px auto;
+    text-align: center;
+}
+.leftline {
+    flex: 1;
+    position: relative;
+    top: 8.5px;
+    left: 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    width: 35%;
+}
+.leftline2 {
+    flex: 1;
+    position: relative;
+    top: 85px;
+    left: 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    width: 35%;
+}
+.rightline{
+    flex: 1;
+    position: relative;
+    top: -8.5px;
+    left: 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    width: 35%;
+    float: right;
+}
+.smalltitle {
+    text-align: center;
+    padding: 0 12px;
+    font-size: 14px;
+    font-weight: 600;
+}
+.detail-supports {
+    list-style-type: none;
+    color: white;
+    float: left;
+    text-align: left;
+    width: 80%;
+    margin: 0 auto;
+}
+.supports-item{
+    padding: 0 12px;
+    margin-bottom: 12px;
+    font-size: 0;
+}
+.detail-close {
+    text-align: center;
 }
 .content brand {
     width: 30px;
@@ -278,7 +417,7 @@ span {
 .tab{
     display: flex;
     width: 100%;
-    height: 40px;
+    height: 35px;
     line-height: 40px;
     text-align: center;
 }
@@ -288,7 +427,7 @@ span {
 }
 a {
     text-decoration:none;
-    color:rgb(77, 85, 93);
+    color:rgb(51, 60, 68);
 }
 .tab a :hover {
     color: black;
@@ -297,17 +436,120 @@ a {
 hr {
     margin: 0 ;
 }
-.fooditem{
+.foodItem{
+    display: flex;
+    position: absolute;
+    top: 165px;
+    bottom: 46px;
     width: 100%;
-    height: 100%;
+    background-color: #fff;
+    overflow: hidden
 }
 .leftNav{
-    width: 25%;
-    height: 100%;
-    position: relative;
+    flex: 0 0 80px;
+    width: 80px;
+    background-color: #f3f5f7;
 }
-#meum li {
+.leftNav ul {
     list-style-type: none;
+    width: 80px;
+    padding: 0;
+    margin: 0;
+}
+.leftNav span {
+    font-size: 12px;
+}
+.meun {
+    display: table;
+    width: 100%;
+    height: 34px;
+    line-height: 34px;
+    font-size: 16px;
+    text-align: center;
+}
+.meun span {
+    margin: 0;
+}
+.active {
+    background-color: white;
+}
+.foodlist{
+    flex: 1;
+}
+.foodul {
+    margin: 0;
+    padding: 0;
+    overflow: scroll;
+    height:100%;
+}
+.foodtitle {
+    list-style-type: none;
+}
+.foodtitle h1 {
+    margin-top: 0;
+}
+.rfoodtitle {
+    padding-left: 14px;
+    height: 26px;
+    line-height: 26px;
+    border-left: 2px solid #d9dde1;
+    font-size: 12px;
+    color: rgb(147, 153, 159);
+    background-color: #f3f5f7;
+}
+.food{
+    position: relative;
+    display: flex;
+    margin: 18px;
+    padding-bottom: 18px;
+}
+.picture{
+    flex: 0 0 57px;
+    width: 57px;
+    height: 57px;
+    margin-right: 10px;
+}
+.picture img {
+    width: 57px;
+    height: 57px;
+}
+.foodcontent {
+    flex: 1;
+}
+.foodname {
+    font-size: 14px;
+    margin: 2px 0 8px 0;
+    height: 14px;
+    line-height: 14px;
+    color: rgb(7, 17, 27);
+}
+.extra {
+    margin-bottom: 8px;
+    line-height: 12px;
+    font-size: 0;
+    color: rgb(147, 153, 159);
+}
+.sellcount {
+    font-size: 10px;
+    margin-left: 0;
+    margin-right: 12px;
+}
+.rating {
+    font-size: 10px;
+}
+.piece{
+    font-weight: 700;
+    line-height: 24px;
+}
+.now {
+    margin: 0 8px 0 0;
+    font-size: 14px;
+    color: rgb(240, 20, 20);
+}
+.old {
+    font-size: 10px;
+    color: rgb(147, 153, 159);
+    text-decoration: line-through;
 }
 .content {
     position: fixed;

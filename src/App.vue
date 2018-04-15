@@ -1,15 +1,11 @@
 <template>
   <div id="app">
-    <order></order> 
+    <router-view></router-view> 
   </div>
 </template>
 <script>
-import order from '@/views/order';
 export default {
-    name: 'App',
-    components: {
-        order
-    }
+    name: 'App'
 };
 </script>
 
