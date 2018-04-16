@@ -111,10 +111,19 @@
                         </div>
                         <div class="piece">
                             <span class="now">￥{{ foodname.piece }}</span>
+                            <div class="control">
+                                <transition name="move">
+                                    <div class="decrease" @click.stop.prevent="decrease(foodname, $event)">
+                                        <i class="icon iconfont icon-offline"></i>                                       
+                                    </div>
+                                </transition> 
+                                <div class="num" v-show="menu[foodname.c_id] > 0">{{ menu[foodname.c_id] }}</div>
+                                <div class="add" @click.stop.prevent="add(foodname, $event)">
+                                    <i class="icon iconfont icon-addition_fill"></i>
+                                </div>
+                            </div>
                         </div>
-                        <div class="control">
-
-                        </div>
+                        
                     </div>
                 </li>
             </ul>
@@ -125,12 +134,12 @@
             <div class="main">
                 <div class="left">
                     <div class="logoPart">
-                        <div class="logo" :class="{'logoLight': count > 0}">
+                        <div class="logo" :class="{'logoLight': countFood > 0}">
                             <i class="icon iconfont icon-gouwuche"></i>
                         </div>
-                        <div class="count" v-show="count > 0">{{ count }}</div>
+                        <div class="count" v-show="countFood > 0">{{ countFood }}</div>
                     </div>
-                    <div class="price" :class="{'priceLight': count >0}">￥{{ totalPrice }}</div>
+                    <div class="price" :class="{'priceLight': countFood >0}">￥{{ totalPrice }}</div>
                 </div>
                 <div class="right"@click.stop="pay">
                     <div class="pay">{{ payDesc }}</div>
@@ -178,7 +187,9 @@ export default {
             // all data
             foodDetail: [],
             // render data
-            renderFoodDetail: []
+            renderFoodDetail: [],
+            menu: {},
+            select: []
         };
     },
     props: {
@@ -189,12 +200,6 @@ export default {
             type: Object
         },
         //  加入购物车的商品
-        selectFoods: {
-            type: Array,
-            default () {
-                return [];
-            }
-        },
         // 起送费
         minPrice: {
             type: Number,
@@ -219,26 +224,69 @@ export default {
             this.renderFoodDetail = renderFoodDetail;
             this.isActive = index;
         },
+        decrease (foodname, event) {
+            // 解决移动端响应两次点击事件的问题
+            if (this.menu[foodname.c_id]) {
+                const val = this.menu[foodname.c_id] - 1;
+                this.$set(this.menu, foodname.c_id, val);
+                return this.menu;
+            } else {
+                this.menu = {
+                    ...this.menu, // 扩展运算符
+                    [foodname.c_id]: false
+                };
+            }
+        },
+        add (foodname, event) {
+            if (this.menu[foodname.c_id]) {
+                const val = this.menu[foodname.c_id] + 1;
+                this.$set(this.menu, foodname.c_id, val);
+            } else {
+                this.menu = {
+                    ...this.menu, // 扩展运算符
+                    [foodname.c_id]: 1
+                };
+            }
+            console.log(foodname);
+            console.log(this.menu);
+            console.log(this.menu[foodname.c_id]);
+        },
         pay () {
             MessageBox.confirm(`您共需支付 ${this.totalPrice} 元`, '结算');
+        },
+        // 所选商品总数量
+        countFood (menu) {
+
+            // let total = 0;
+            // this.selectFoods.forEach((food) => {
+            //     total += food.count;
+            // });
+            // return total;
         }
     },
     filters: {},
     computed: {
         totalPrice () {
-            let total = 0;
-            this.selectFoods.forEach((food) => {
-                total += food.price * food.count;
-            });
-            return total;
+            // let total = 0;
+            // this.selectFoods.forEach((food) => {
+            //     total += food.price * food.count;
+            // });
+            // return total;
         },
-        // 所选商品总数量
-        count () {
-            let total = 0;
-            this.selectFoods.forEach((food) => {
-                total += food.count;
-            });
-            return total;
+        selectFoods (foodname, menu) {
+            // let select = [];
+            // if (this.foodname.c_id = this.menu.key) {
+            //     select.push((this.foodname.c_name, this.menu.value));
+            // }
+        //     // 之前一直错，可能是 this 指向问题，不用箭头函数
+        //     this.foodname.forEach((good) => {
+        //         good.c_id.forEach((food) => {
+        //             if (food.count) {
+        //                 select.push(food);
+        //             }
+        //         });
+        //     });
+        //     return select;
         },
         // 20元起送 、 还差10元起送 、 去结算
         payDesc () {
@@ -263,6 +311,7 @@ export default {
             })
         ]).then(_ => {
             this.show(this.typeFood[0], this.isActive);
+            return this.foodDetail.c_id;
         });
         console.log(this.$route);
         console.log(this);
@@ -550,6 +599,35 @@ hr {
     font-size: 10px;
     color: rgb(147, 153, 159);
     text-decoration: line-through;
+}
+.control {
+    font-size: 0;
+    line-height: 24px;
+    float: right;
+}
+.decrease, .add {
+    display: inline-block;
+    padding: 6px;
+}
+.decrease i {
+    font-size: 24px;
+    color: #5ED14F;
+    display: inline-block;
+    font-weight: 500;
+}
+.add i {
+    font-size: 24px;
+    color: #5ED14F;
+    display: inline-block;
+    font-weight: 500;
+}
+.num {
+    display: inline-block;
+    padding: 6px;
+    font-size: 16px;
+    text-align: center;
+    color: rgb(147, 153, 159);
+    vertical-align: top;
 }
 .content {
     position: fixed;
