@@ -137,18 +137,37 @@
                         <div class="logo" :class="{'logoLight': countFood > 0}">
                             <i class="icon iconfont icon-gouwuche"></i>
                         </div>
-                        <div class="count" v-show="countFood > 0">{{ countFood }}</div>
+                        <div class="count" v-show="totalnum > 0">{{ totalnum }}</div>
                     </div>
-                    <div class="price" :class="{'priceLight': countFood >0}">￥{{ totalPrice }}</div>
+                    <div class="price" :class="{'priceLight': totalnum >0}">￥{{ totalPrice }}</div>
                 </div>
                 <div class="right"@click.stop="pay">
                     <div class="pay">{{ payDesc }}</div>
                 </div>
             </div>
         </div>
-    </div>   
+    </div>
+    <transition name="fold">
+        <div class="shopcartList" v-show="listShow">
+            <div class="listHeader">
+                <h1 class="listTitle"></h1>
+                <span class="empty" @click="empty">清空</span>
+            </div>
+            <div class="listContent">
+                <ul>
+                    <li class="listFood" v-for="">
+                        <span class="listFoodname">{{}}</span>
+                        <div class="listFoodprice">
+                            <span>￥{{}}</span>
+                        </div>
+                        <div class="listControl">
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </transition>    
 
-    
 
     <keep-alive>
       <router-view></router-view>
@@ -189,7 +208,9 @@ export default {
             // render data
             renderFoodDetail: [],
             menu: {},
-            select: []
+            select: [],
+            listShow: false,
+            totalnum: 0
         };
     },
     props: {
@@ -229,12 +250,14 @@ export default {
             if (this.menu[foodname.c_id]) {
                 const val = this.menu[foodname.c_id] - 1;
                 this.$set(this.menu, foodname.c_id, val);
-                return this.menu;
             } else {
                 this.menu = {
                     ...this.menu, // 扩展运算符
                     [foodname.c_id]: false
                 };
+            }
+            if (this.totalnum > 0) {
+                this.totalnum = this.totalnum - 1;
             }
         },
         add (foodname, event) {
@@ -247,12 +270,27 @@ export default {
                     [foodname.c_id]: 1
                 };
             }
-            console.log(foodname);
-            console.log(this.menu);
-            console.log(this.menu[foodname.c_id]);
+            this.totalnum++;
+            console.log(this.totalnum);
+            // for (var i = 0; i < Object.keys(this.menu).length; i++) {
+            //     // this.totalnum = +this.menu[i];
+            // }
+            // console.log(foodname);
+            // console.log(this.menu);
+            // console.log(Object.keys(this.menu).length);
         },
         pay () {
             MessageBox.confirm(`您共需支付 ${this.totalPrice} 元`, '结算');
+        },
+        empty () {
+            // this.selectFoods.forEach((food) => {
+            //     food.count = 0
+            // })
+            // this.listShow = false
+            // },
+            // hideList () {
+            // this.listShow = false
+            // }
         },
         // 所选商品总数量
         countFood (menu) {
@@ -731,5 +769,61 @@ desc {
 .payLight {
     background-color: #FFDA61;
     color: #333;
+}
+.shopcartList {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    width: 100%;
+    transform: translate3d(0, -100%, 0);
+}
+.listHeader {
+    height: 40px;
+    line-height: 40px;
+    padding: 0 18px;
+    background-color: #f3f5f7;
+    border-bottom: 1px solid rgba(7, 17, 27, 0.1);
+}
+.listTitle {
+    float: left;
+    font-size: 14px;
+    color: rgb(7, 17, 27);
+}
+.empty {
+    float: right;
+    font-size: 12px;
+    color: rgb(0, 160, 220);
+}
+.listContent {
+    max-height: 217px;
+    padding: 0 18px;
+    background-color: #fff;
+    overflow: hidden;
+}
+.listFood {
+    position: relative;
+    padding: 12px 0;
+    box-sizing: border-box;
+    border-bottom: 1px solid rgba(7, 17, 27, 0.1);
+}
+.listFoodname {
+    line-height: 24px;
+    font-size: 14px;
+    color: rgb(7, 17, 27);
+}
+.listFoodprice {
+    position: absolute;
+    right: 95px;
+    bottom: 12px;
+    line-height: 24px;
+    font-size: 14px;
+    font-weight: 700;
+    color: rgb(240, 20, 20);
+}
+.listControl {
+    position: absolute;
+    right: 0;
+    bottom: -5px;
 }
 </style>
