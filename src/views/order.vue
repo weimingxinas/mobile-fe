@@ -131,10 +131,10 @@
     </div>
     <div class="shopcar">
         <div class="content">
-            <div class="main">
+            <div class="main" @click="">
                 <div class="left">
                     <div class="logoPart">
-                        <div class="logo" :class="{'logoLight': countFood > 0}">
+                        <div class="logo" :class="{'logoLight': totalnum > 0}">
                             <i class="icon iconfont icon-gouwuche"></i>
                         </div>
                         <div class="count" v-show="totalnum > 0">{{ totalnum }}</div>
@@ -142,7 +142,7 @@
                     <div class="price" :class="{'priceLight': totalnum >0}">￥{{ totalPrice }}</div>
                 </div>
                 <div class="right"@click.stop="pay">
-                    <div class="pay">{{ payDesc }}</div>
+                    <div class="pay" :class="{'payLight':totalnum >0}">{{ payDesc }}</div>
                 </div>
             </div>
         </div>
@@ -156,11 +156,11 @@
             <div class="listContent">
                 <ul>
                     <li class="listFood" v-for="">
-                        <span class="listFoodname">{{}}</span>
+                        <span class="listFoodname">{{ 1111 }}</span>
                         <div class="listFoodprice">
                             <span>￥{{}}</span>
                         </div>
-                        <div class="listControl">
+                        <div class="listControl"> 
                         </div>
                     </li>
                 </ul>
@@ -210,6 +210,7 @@ export default {
             menu: {},
             select: [],
             listShow: false,
+            // 商品总数量
             totalnum: 0
         };
     },
@@ -247,7 +248,7 @@ export default {
         },
         decrease (foodname, event) {
             // 解决移动端响应两次点击事件的问题
-            if (this.menu[foodname.c_id]) {
+            if (this.menu[foodname.c_id] >= 1) {
                 const val = this.menu[foodname.c_id] - 1;
                 this.$set(this.menu, foodname.c_id, val);
             } else {
@@ -256,8 +257,11 @@ export default {
                     [foodname.c_id]: false
                 };
             }
-            if (this.totalnum > 0) {
-                this.totalnum = this.totalnum - 1;
+            console.log(this.menu[foodname.c_id]);
+            if (this.menu[foodname.c_id] >= 0) {
+                if (this.totalnum > 0 && this.menu[foodname.c_id] !== false) {
+                    this.totalnum = this.totalnum - 1;
+                }
             }
         },
         add (foodname, event) {
@@ -271,13 +275,13 @@ export default {
                 };
             }
             this.totalnum++;
-            console.log(this.totalnum);
+            // console.log(this.totalnum);
             // for (var i = 0; i < Object.keys(this.menu).length; i++) {
             //     // this.totalnum = +this.menu[i];
             // }
             // console.log(foodname);
             // console.log(this.menu);
-            // console.log(Object.keys(this.menu).length);
+            // console.log(Object.keys(this.menu));
         },
         pay () {
             MessageBox.confirm(`您共需支付 ${this.totalPrice} 元`, '结算');
@@ -291,40 +295,47 @@ export default {
             // hideList () {
             // this.listShow = false
             // }
-        },
-        // 所选商品总数量
-        countFood (menu) {
-
-            // let total = 0;
-            // this.selectFoods.forEach((food) => {
-            //     total += food.count;
-            // });
-            // return total;
         }
     },
     filters: {},
     computed: {
         totalPrice () {
             // let total = 0;
-            // this.selectFoods.forEach((food) => {
-            //     total += food.price * food.count;
+            // this.meun.forEach((food) => {
+            //     total += food.this.meun[foodname.c_id] * food.this.foodDetail[];
             // });
             // return total;
         },
-        selectFoods (foodname, menu) {
-            // let select = [];
-            // if (this.foodname.c_id = this.menu.key) {
-            //     select.push((this.foodname.c_name, this.menu.value));
+        selectFoods () {
+            let select = [];
+            // for (var i = 0; (Object.keys(this.menu))[i] === this.foodDetail[i].c_id; i++) {
+            //     select.push(this.foodDetail[i].c_name);
+            //     console.log(select);
             // }
-        //     // 之前一直错，可能是 this 指向问题，不用箭头函数
-        //     this.foodname.forEach((good) => {
-        //         good.c_id.forEach((food) => {
-        //             if (food.count) {
-        //                 select.push(food);
-        //             }
-        //         });
-        //     });
-        //     return select;
+            // if (this.foodDetail.c_id = Object.keys(this.menu)) {
+            //     select.push((this.foodDetail.c_name, this.menu[foodname.c_id]));
+            // }
+            // 之前一直错，可能是 this 指向问题，不用箭头函数
+            // this.foodname.forEach((good) => {
+            //     good.c_id.forEach((food) => {
+            //         if (good.c_id === Object.keys(this.menu)) {
+            //             select.push(food.c_name);
+            //         }
+            //     });
+            // });
+            let menuArr = Object.keys(this.menu);
+            menuArr = menuArr.map(val => parseInt(val));
+            this.foodDetail.forEach(val => {
+                if (menuArr.includes(val.c_id)) {
+                    select.push({
+                        'c_id': val.c_id,
+                        'c_num': this.menu[val.c_id],
+                        'c_name': val.c_name,
+                        price: val.piece
+                    });
+                }
+            });
+            return select;
         },
         // 20元起送 、 还差10元起送 、 去结算
         payDesc () {
@@ -659,6 +670,24 @@ hr {
     display: inline-block;
     font-weight: 500;
 }
+.move-enter-active, .move-leave-active {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+    transition: all .4s;
+}
+.move-enter-active, .move-leave-active i {
+    transform: rotate(0);
+    transition: all .4s;
+}
+.move-enter, .move-leave-to {
+    opacity: 0;
+    transform: translate3d(24px, 0, 0);
+    transition: all .4s;
+}
+.move-enter, .move-leave-to i {
+    transform: rotate(360deg);
+    transition: all .4s;
+}
 .num {
     display: inline-block;
     padding: 6px;
@@ -778,6 +807,9 @@ desc {
     width: 100%;
     transform: translate3d(0, -100%, 0);
 }
+.shopcartList .fold-enter-active, .fold-leave-active {
+    transition: all 0.5s;
+}
 .listHeader {
     height: 40px;
     line-height: 40px;
@@ -826,4 +858,11 @@ desc {
     right: 0;
     bottom: -5px;
 }
+.fold-enter-active, .fold-leave-active {
+    transition: all .5s;
+}
+.fold-enter, .fold-leave-active {
+      opacity: 0;
+      background: rgba(7, 17, 27, 0);
+    }
 </style>
