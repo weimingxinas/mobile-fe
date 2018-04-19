@@ -131,8 +131,8 @@
     </div>
     <div class="shopcar">
         <div class="content">
-            <div class="main" @click="">
-                <div class="left">
+            <div class="main">
+                <div class="left" @click="listShow = !false">
                     <div class="logoPart">
                         <div class="logo" :class="{'logoLight': totalnum > 0}">
                             <i class="icon iconfont icon-gouwuche"></i>
@@ -150,15 +150,15 @@
     <transition name="fold">
         <div class="shopcartList" v-show="listShow">
             <div class="listHeader">
-                <h1 class="listTitle"></h1>
+                <h1 class="listTitle">购物车</h1>
                 <span class="empty" @click="empty">清空</span>
             </div>
             <div class="listContent">
                 <ul>
-                    <li class="listFood" v-for="">
-                        <span class="listFoodname">{{ 1111 }}</span>
+                    <li class="listFood" v-for="foodlist in selectFoods">
+                        <span class="listFoodname">{{ selectFoods.c_name }}</span>
                         <div class="listFoodprice">
-                            <span>￥{{}}</span>
+                            <span>￥{{ selectFoods.price }}</span>
                         </div>
                         <div class="listControl"> 
                         </div>
@@ -262,6 +262,11 @@ export default {
                 if (this.totalnum > 0 && this.menu[foodname.c_id] !== false) {
                     this.totalnum = this.totalnum - 1;
                 }
+                // for (var i = 0; i < Object.keys(this.menu).length; i++) {
+                //     if (this.menu[i] === 0) {
+                //         this.menu.splice(i, 1);
+                //     }
+                // }
             }
         },
         add (foodname, event) {
@@ -275,10 +280,6 @@ export default {
                 };
             }
             this.totalnum++;
-            // console.log(this.totalnum);
-            // for (var i = 0; i < Object.keys(this.menu).length; i++) {
-            //     // this.totalnum = +this.menu[i];
-            // }
             // console.log(foodname);
             // console.log(this.menu);
             // console.log(Object.keys(this.menu));
@@ -300,11 +301,14 @@ export default {
     filters: {},
     computed: {
         totalPrice () {
-            // let total = 0;
+            let total = 0;
+            for (let i = 0; i < this.selectFoods.length; i++) {
+                total += this.selectFoods[i].c_num * this.selectFoods[i].price;
+            }
             // this.meun.forEach((food) => {
             //     total += food.this.meun[foodname.c_id] * food.this.foodDetail[];
             // });
-            // return total;
+            return total;
         },
         selectFoods () {
             let select = [];
@@ -315,14 +319,6 @@ export default {
             // if (this.foodDetail.c_id = Object.keys(this.menu)) {
             //     select.push((this.foodDetail.c_name, this.menu[foodname.c_id]));
             // }
-            // 之前一直错，可能是 this 指向问题，不用箭头函数
-            // this.foodname.forEach((good) => {
-            //     good.c_id.forEach((food) => {
-            //         if (good.c_id === Object.keys(this.menu)) {
-            //             select.push(food.c_name);
-            //         }
-            //     });
-            // });
             let menuArr = Object.keys(this.menu);
             menuArr = menuArr.map(val => parseInt(val));
             this.foodDetail.forEach(val => {
@@ -333,7 +329,13 @@ export default {
                         'c_name': val.c_name,
                         price: val.piece
                     });
+                    console.log(this.select.length);
                 }
+                // for (var i = 0; i < select.length; i++) {
+                //     if (select.c_num === 0) {
+                //         select.splice(i, 1);
+                //     }
+                // }
             });
             return select;
         },
@@ -801,11 +803,12 @@ desc {
 }
 .shopcartList {
     position: absolute;
-    top: 0;
+    top: 60%;
     left: 0;
-    z-index: -1;
+    z-index: 0;
     width: 100%;
-    transform: translate3d(0, -100%, 0);
+    transform: translate3d(0, 100%, 0);
+    background-color: white;
 }
 .shopcartList .fold-enter-active, .fold-leave-active {
     transition: all 0.5s;
@@ -826,6 +829,7 @@ desc {
     float: right;
     font-size: 12px;
     color: rgb(0, 160, 220);
+    margin:0;
 }
 .listContent {
     max-height: 217px;
