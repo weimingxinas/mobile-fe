@@ -122,8 +122,7 @@
                                     <i class="icon iconfont icon-addition_fill"></i>
                                 </div>
                             </div>
-                        </div>
-                        
+                        </div>                        
                     </div>
                 </li>
             </ul>
@@ -147,7 +146,7 @@
             </div>
         </div>
     </div>
-    <transition name="fold">
+    <transition name="fold" >
         <div class="shopcartList" v-show="listShow">
             <div class="listHeader">
                 <h1 class="listTitle">购物车</h1>
@@ -156,22 +155,29 @@
             <div class="listContent">
                 <ul>
                     <li class="listFood" v-for="foodlist in selectFoods">
-                        <span class="listFoodname">{{ selectFoods.c_name }}</span>
+                        <span class="listFoodname">{{ foodlist.c_name }}</span>
                         <div class="listFoodprice">
-                            <span>￥{{ selectFoods.price }}</span>
+                            <span>￥{{ foodlist.price }}</span>
                         </div>
-                        <div class="listControl"> 
+                        <div class="control">
+                            <transition name="move">
+                                <div class="decrease" @click.stop.prevent="decrease(foodlist, $event)">
+                                    <i class="icon iconfont icon-offline"></i>                                       
+                                </div>
+                            </transition> 
+                            <div class="num" v-show="foodlist.c_num > 0">{{ foodlist.c_num }}</div>
+                            <div class="add" @click.stop.prevent="add(foodlist, $event)">
+                                <i class="icon iconfont icon-addition_fill"></i>
+                            </div>
                         </div>
                     </li>
                 </ul>
             </div>
         </div>
-    </transition>    
-
-
-    <keep-alive>
-      <router-view></router-view>
-    </keep-alive>      
+    </transition>
+    <transition name="fade">
+        <div class="cartlistBackground" @click="hideList" v-show="listShow"></div>
+    </transition>      
   </div>
 </template>
 <script>
@@ -248,25 +254,16 @@ export default {
         },
         decrease (foodname, event) {
             // 解决移动端响应两次点击事件的问题
-            if (this.menu[foodname.c_id] >= 1) {
+            if (this.menu[foodname.c_id] > 0) {
+                if (this.totalnum > 0) {
+                    this.totalnum = this.totalnum - 1;
+                }
+            }
+            if (this.menu[foodname.c_id] > 1) {
                 const val = this.menu[foodname.c_id] - 1;
                 this.$set(this.menu, foodname.c_id, val);
             } else {
-                this.menu = {
-                    ...this.menu, // 扩展运算符
-                    [foodname.c_id]: false
-                };
-            }
-            console.log(this.menu[foodname.c_id]);
-            if (this.menu[foodname.c_id] >= 0) {
-                if (this.totalnum > 0 && this.menu[foodname.c_id] !== false) {
-                    this.totalnum = this.totalnum - 1;
-                }
-                // for (var i = 0; i < Object.keys(this.menu).length; i++) {
-                //     if (this.menu[i] === 0) {
-                //         this.menu.splice(i, 1);
-                //     }
-                // }
+                this.$delete(this.menu, foodname.c_id);
             }
         },
         add (foodname, event) {
@@ -287,15 +284,19 @@ export default {
         pay () {
             MessageBox.confirm(`您共需支付 ${this.totalPrice} 元`, '结算');
         },
+        hideList () {
+            this.listShow = false;
+        },
         empty () {
-            // this.selectFoods.forEach((food) => {
-            //     food.count = 0
-            // })
-            // this.listShow = false
-            // },
-            // hideList () {
-            // this.listShow = false
+            // for (let i = 0; i < this.selectFoods.length; i++) {
+            //     this.selectFoods[i]['c_num'] = 0;
             // }
+            // this.selectFoods.forEach((food) => {
+            //     food['c_num'] = 0;
+            // });
+            this.menu = {};
+            this.totalnum = 0;
+            this.listShow = false;
         }
     },
     filters: {},
@@ -303,12 +304,12 @@ export default {
         totalPrice () {
             let total = 0;
             for (let i = 0; i < this.selectFoods.length; i++) {
-                total += this.selectFoods[i].c_num * this.selectFoods[i].price;
+                total += this.selectFoods[i].c_num * (this.selectFoods[i].price * 100);
             }
             // this.meun.forEach((food) => {
             //     total += food.this.meun[foodname.c_id] * food.this.foodDetail[];
             // });
-            return total;
+            return total / 100;
         },
         selectFoods () {
             let select = [];
@@ -372,6 +373,10 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
+.order {
+    position: relative;
+    height: 100%;
+}
 .sellerHeader {
     width: 100%;
     height: 100px;
@@ -412,18 +417,28 @@ export default {
     height: 64px;
     width: 200px;
 }
+.contents span {
+    font-size: 12px;
+    margin-left: 10px;
+}
 .supports li {
     list-style-type: none;
     float: left;
     width: 25%;
     margin-left: 10px;
 }
+.supports span {
+    margin: 0;
+}
+.supports-item span {
+    font-size: 14px;
+}
 #shopName {
-    margin:0 4px 4px 6px;
+    margin:0 8px 4px 6px;
     float: left;
     font-size: 16px;
 }
-span {
+#shopName span {
     margin:2px 0 8px 6px;
     font-size: 10px;
 
@@ -431,6 +446,7 @@ span {
 .notice{
     width: 100%;
     height: 20px;
+    font-size: 14px;
     position: relative;
 }
 .detail {
@@ -462,7 +478,7 @@ span {
 .leftline {
     flex: 1;
     position: relative;
-    top: 8.5px;
+    top:10.5px;
     left: 0;
     border-bottom: 1px solid rgba(255, 255, 255, 0.2);
     width: 35%;
@@ -470,7 +486,7 @@ span {
 .leftline2 {
     flex: 1;
     position: relative;
-    top: 85px;
+    top: 104px;
     left: 0;
     border-bottom: 1px solid rgba(255, 255, 255, 0.2);
     width: 35%;
@@ -802,16 +818,21 @@ desc {
     color: #333;
 }
 .shopcartList {
-    position: absolute;
-    top: 60%;
+    position: relative;
+    top: 0;
     left: 0;
-    z-index: 0;
+    bottom: 0;
+    z-index: 41;
+    height: 50%;
     width: 100%;
-    transform: translate3d(0, 100%, 0);
+    transform: translate3d(0, 50%, 0);
     background-color: white;
 }
-.shopcartList .fold-enter-active, .fold-leave-active {
+.fold-enter-active, .fold-leave-active {
     transition: all 0.5s;
+}
+.fold-enter, .fold-leave-active {
+        transform: translate3d(0, 0, 0);
 }
 .listHeader {
     height: 40px;
@@ -824,6 +845,7 @@ desc {
     float: left;
     font-size: 14px;
     color: rgb(7, 17, 27);
+    margin: 0;
 }
 .empty {
     float: right;
@@ -836,6 +858,11 @@ desc {
     padding: 0 18px;
     background-color: #fff;
     overflow: hidden;
+}
+.listContent ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
 }
 .listFood {
     position: relative;
@@ -862,11 +889,27 @@ desc {
     right: 0;
     bottom: -5px;
 }
-.fold-enter-active, .fold-leave-active {
-    transition: all .5s;
+.backgroundall {
+    width: 100%;
+    height: 100%;
+    background: rgba(7, 17, 27, 0.6);
 }
-.fold-enter, .fold-leave-active {
-      opacity: 0;
-      background: rgba(7, 17, 27, 0);
-    }
+.cartlistBackground {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 40;
+    opacity: 1;
+    filter: blur(10px);
+    background: rgba(7, 17, 27, 0.6);
+}
+.background .fold-enter-active, .fold-leave-active {
+    transition: all 0.5s;
+}
+.background .fold-enter, .fold-leave-active {
+    opacity: 0;
+    background: rgba(7, 17, 27, 0);
+}
 </style>
