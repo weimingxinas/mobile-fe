@@ -1,114 +1,142 @@
 <template>
-    <div class="hello">
-      	<h1>{{ msg }}</h1>
-    <h2>Essential Links</h2>
-    <ul>
-      	<li>
-        <a
-          href="https://vuejs.org"
-          target="_blank"
-        >
-          Core Docs
-        </a>
-      </li>
-      <li>
-        <a
-          href="https://forum.vuejs.org"
-          target="_blank"
-        >
-          Forum
-        </a>
-      </li>
-      <li>
-        <a
-          href="https://chat.vuejs.org"
-          target="_blank"
-        >
-          Community Chat
-        </a>
-      </li>
-      <li>
-        <a
-          href="https://twitter.com/vuejs"
-          target="_blank"
-        >
-          Twitter
-        </a>
-      </li>
-      <br>
-      <li>
-        <a
-          href="http://vuejs-templates.github.io/webpack/"
-          target="_blank"
-        >
-          Docs for This Template
-        </a>
-      </li>
-    </ul>
-    <h2>Ecosystem</h2>
-    <ul>
-      <li>
-        <a
-          href="http://router.vuejs.org/"
-          target="_blank"
-        >
-          vue-router
-		</a>
-      </li>
-      <li>
-        <a
-          href="http://vuex.vuejs.org/"
-          target="_blank"
-        >
-          vuex
-        </a>
-      </li>
-      <li>
-        <a
-          href="http://vue-loader.vuejs.org/"
-          target="_blank"
-        >
-          vue-loader
-        </a>
-      </li>
-      <li>
-        <a
-          href="https://github.com/vuejs/awesome-vue"
-          target="_blank"
-        >
-          awesome-vue
-        </a>
-      </li>
-    </ul>
+  <div class="ordersuccess">
+    <!-- 头部图像 -->
+    <div class="orderHeader">
+      <span class="before"><i class="icon iconfont icon-xitongfanhui"></i></span>
+    </div>
+    <div class="maincontent">
+      <div class="content">
+        <h2 class="title">商家已接单</h2>
+        <p>商品准备中，请稍等，有问题请联系商家</p>        
+        <div class="button">
+        <button class="press" :class="{'buttonbgcolor': isAtive1}" @click="choose1">取消</button>
+        <button class="press" :class="{'buttonbgcolor': isAtive2}" @click="choose2">加菜</button>
+        </div>
+      </div>
+      <div class="foodlist">
+          <div class="foodlistHesder">
+              <span class="shopname">深圳麦当劳红荔西路餐厅<i></i></span>             
+          </div>
+          <div class="foodlistcontent">
+              <div class="fooddetail" v-for="">
+                <ul>
+                    <li>
+                        <img>
+                        <span>{{ }}</span>
+                        <span>￥{{ }}</span>
+                    </li>
+                </ul>
+              </div>
+              <div class="total">
+                <span>合计</span>
+                <span class="redcolor">￥{{ }}</span>
+              </div>
+          </div>         
+      </div>
+    </div>
   </div>
 </template>
 <script>
+import api from '@/api';
 export default {
     name: 'orderSuccess',
     data () {
         return {
-            msg: 'Welcome to Your Vue.js App'
+            isAtive1: false,
+            isAtive2: true
         };
     },
     created () {
+        const id = this.$router.params['o_id'];
+        api.getOrder(id).then(res => {
+            console.log(res.data.data);
+        });
+    },
+    methods: {
+        choose1 () {
+            this.isAtive1 = true;
+            this.isAtive2 = false;
+        },
+        choose2 () {
+            this.isAtive2 = true;
+            this.isAtive1 = false;
+        }
     }
 };
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-h1, h2 {
-  font-weight: normal;
+<style>
+* {
+    margin: 0;
+    padding: 0;
 }
-ul {
-  list-style-type: none;
-  padding: 0;
+.ordersuccess {
+    padding:5px 10px;
+    background:  #F8F8F8;
 }
-li {
-  display: inline-block;
-  margin: 0 10px;
+.orderHeader {
+    width: 100%;
+    height: 150px;
+    background: url("/static/img/logo.jpg");
 }
-a {
-  color: #42b983;
+.before i {
+    float: left;
+    margin: 10px 0 0 10px;
+}
+.maincontent {
+    width: 100%;
+    height: 100%;
+}
+.content {
+    height: 100px;
+    position: relative;
+    padding: 10px;
+    background: #fff;
+    margin: 10px 0;
+}
+.title {
+    font-size: 20px;
+    font-weight: 600;
+    text-align: center;
+    margin: 5px 0;
+}
+.content p {
+    font-size: 14px;
+    text-align: center;
+    color: #999;
+    margin-bottom: 10px;
+}
+.button {
+    text-align: center;
+    background: #fff;
+}
+.press {
+    width: 25%;
+    height: 30px;
+    border: 1px solid #999;
+    margin: 0 10px;
+    background: #fff;
+    color: #999;
+}
+.buttonbgcolor {
+    background: #ffda61;
+}
+.foodlist {
+    margin-top: 20px;
+    width: 100%;
+    background: #fff;
+}
+.foodlistHesder {
+    height: 30px;
+    padding: 3px;
+    color: #999;
+    text-align: center;   
+}
+.total {
+    float: right;
+}
+.redcolor {
+    color: red;
 }
 </style>

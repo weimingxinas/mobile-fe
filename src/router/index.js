@@ -8,7 +8,7 @@ Vue.use(Router);
 export default new Router({
     routes: [
         {
-            path: '/orderSuccess',
+            path: '/orderSuccess/:o_id',
             name: 'orderSuccess',
             component: orderSuccess
         },

@@ -131,7 +131,7 @@
     <div class="shopcar">
         <div class="content">
             <div class="main">
-                <div class="left" @click="listShow = !false">
+                <div class="left" @click="shopcartclick">
                     <div class="logoPart">
                         <div class="logo" :class="{'logoLight': totalnum > 0}">
                             <i class="icon iconfont icon-gouwuche"></i>
@@ -140,9 +140,25 @@
                     </div>
                     <div class="price" :class="{'priceLight': totalnum >0}">￥{{ totalPrice }}</div>
                 </div>
-                <div class="right"@click.stop="pay">
-                    <div class="pay" :class="{'payLight':totalnum >0}">{{ payDesc }}</div>
+                <div class="right">
+                    <div class="pay" :class="{'payLight':totalnum >0}" @click="payDesc()">
+                        <span>去结算</span>
+                    </div>
                 </div>
+                <!-- <div class="payment" v-show="paymentshow">
+                    <h2 class="paymentTitle">结算</h2>
+                    <div class="paymentContent">
+                        <p>您共需要支付{{ totalPrice }}</p>
+                    </div>
+                    <div class="paymentButton">
+                        <div class="sure" @click="sure">
+                            <span>确定</span>
+                        </div>
+                        <div class="cancle" @click="cancle">
+                            <span>取消</span>
+                        </div>
+                    </div>
+                </div>                    -->
             </div>
         </div>
     </div>
@@ -177,11 +193,14 @@
     </transition>
     <transition name="fade">
         <div class="cartlistBackground" @click="hideList" v-show="listShow"></div>
-    </transition>      
+    </transition>
+    <!-- <transition name="fade">
+        <div class="paymentBackground" @click="hideList" v-show="paymentshow"></div>
+    </transition> -->
   </div>
 </template>
 <script>
-import { MessageBox } from 'mint-ui';
+// import { MessageBox } from 'mint-ui';
 import api from '@/api';
 export default {
     name: 'order',
@@ -216,6 +235,7 @@ export default {
             menu: {},
             select: [],
             listShow: false,
+            paymentshow: false,
             // 商品总数量
             totalnum: 0
         };
@@ -265,6 +285,9 @@ export default {
             } else {
                 this.$delete(this.menu, foodname.c_id);
             }
+            if (this.totalnum === 0) {
+                this.listShow = false;
+            }
         },
         add (foodname, event) {
             if (this.menu[foodname.c_id]) {
@@ -281,12 +304,35 @@ export default {
             // console.log(this.menu);
             // console.log(Object.keys(this.menu));
         },
-        pay () {
-            MessageBox.confirm(`您共需支付 ${this.totalPrice} 元`, '结算');
+        // pay () {
+        //     if (this.totalPrice > 0) {
+        //         this.paymentshow = true;
+        //     }
+        // },
+        shopcartclick () {
+            if (this.totalnum === 0) {
+                this.listShow = false;
+            } else if (this.listShow === true) {
+                this.listShow = false;
+            } else {
+                this.listShow = true;
+            }
         },
         hideList () {
             this.listShow = false;
+            this.paymentshow = false;
         },
+        payDesc () {
+            if (this.totalnum > 0) {
+                this.listShow = true;
+            }
+        },
+        // sure () {
+
+        // },
+        // cancle () {
+        //     this.paymentshow = false;
+        // },
         empty () {
             // for (let i = 0; i < this.selectFoods.length; i++) {
             //     this.selectFoods[i]['c_num'] = 0;
@@ -297,6 +343,11 @@ export default {
             this.menu = {};
             this.totalnum = 0;
             this.listShow = false;
+        },
+        turnToOrderSucess () {
+            api.orderList(this.menu).then(res => {
+                this.$route.push(`/orderSucess/${res.data.o_id}`);
+            }).catch();
         }
     },
     filters: {},
@@ -339,14 +390,6 @@ export default {
                 // }
             });
             return select;
-        },
-        // 20元起送 、 还差10元起送 、 去结算
-        payDesc () {
-            if (this.totalPrice === 0) {
-                return `10元起送`;
-            } else {
-                return '去结算';
-            }
         }
     },
     created () {
@@ -813,6 +856,63 @@ desc {
     color: rgba(255, 255, 255, 0.4);
     background-color: #2b333b;
 }
+/* .payment {
+    width: 300px;
+    border: 1px solid #bbb;
+    border-radius: 10px;
+    background: #fff;
+    box-shadow: 0 3px 5px #bbb;
+    position: absolute;
+    z-index: 50;
+    left: 50%;
+    transform:translate(-50%,-250%);
+    text-align: center;	
+}
+.paymentTitle {
+    font-size: 16px;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 10px;
+    margin:0;
+    padding-top: 10px;
+    text-align: center;
+}
+.paymentContent {
+    padding: 10px 20px 15px;
+    min-height: 36px;
+    text-align: center;
+}
+.paymentContent p {
+    font-size: 14px;
+    line-height: 36px;
+    text-align: center;
+    margin: 0;
+    color: #999;
+}
+.paymentButton {
+    width: 100%;
+    height: 30px;
+    text-align: center;
+    float: left;
+}
+.cancle, .sure {
+    display: block;
+    width: 50%;
+    height: 30px;
+    font-size: 14px;
+    line-height: 30px;
+    margin: 30px auto;
+    text-align: center;
+    color:#000;
+    cursor: pointer;
+    border-top: 1px solid #999;
+}
+.cancle {
+    border-right: 1px solid #999;
+}
+.sure {
+    float: right;
+    color: #26a2ff;
+} */ 
 .payLight {
     background-color: #FFDA61;
     color: #333;
@@ -827,6 +927,7 @@ desc {
     width: 100%;
     transform: translate3d(0, 50%, 0);
     background-color: white;
+    max-height: 70%;
 }
 .fold-enter-active, .fold-leave-active {
     transition: all 0.5s;
@@ -854,10 +955,10 @@ desc {
     margin:0;
 }
 .listContent {
-    max-height: 217px;
+    max-height: 70%;
     padding: 0 18px;
     background-color: #fff;
-    overflow: hidden;
+    overflow: scroll;
 }
 .listContent ul {
     list-style-type: none;
@@ -895,6 +996,17 @@ desc {
     background: rgba(7, 17, 27, 0.6);
 }
 .cartlistBackground {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 40;
+    opacity: 1;
+    filter: blur(10px);
+    background: rgba(7, 17, 27, 0.6);
+}
+.paymentBackground {
     position: fixed;
     top: 0;
     left: 0;
