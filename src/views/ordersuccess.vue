@@ -1,40 +1,43 @@
 <template>
-  <div class="ordersuccess">
+    <div class="orderSuccess">
     <!-- 头部图像 -->
-    <div class="orderHeader">
-      <span class="before"><i class="icon iconfont icon-xitongfanhui"></i></span>
-    </div>
-    <div class="maincontent">
-      <div class="content">
-        <h2 class="title">商家已接单</h2>
-        <p>商品准备中，请稍等，有问题请联系商家</p>        
-        <div class="button">
-        <button class="press" :class="{'buttonbgcolor': isAtive1}" @click="choose1">取消</button>
-        <button class="press" :class="{'buttonbgcolor': isAtive2}" @click="choose2">加菜</button>
+        <div class="orderHeader">
+            <span class="before"><i class="icon iconfont icon-xitongfanhui"></i></span>
         </div>
-      </div>
-      <div class="foodlist">
-          <div class="foodlistHesder">
-              <span class="shopname">深圳麦当劳红荔西路餐厅<i></i></span>             
-          </div>
-          <div class="foodlistcontent">
-              <div class="fooddetail" v-for="food in foodlist">
-                <ul>
-                    <li>
-                        <img>
-                        <span>{{ food.c_name}}</span>
-                        <span>￥{{ food.piece }}</span>
-                    </li>
-                </ul>
-              </div>
-              <div class="total">
-                <span>合计</span>
-                <span class="redcolor">￥{{ totalprice }}</span>
-              </div>
-          </div>         
-      </div>
+        <div class="maincontent">
+            <div class="content">
+                <h2 class="title">商家已接单</h2>
+                <p>商品准备中，请稍等，有问题请联系商家</p>        
+                <div class="button">
+                    <button class="press" :class="{'buttonbgcolor': isAtive1}" @click="choose1">取消</button>
+                    <button class="press" :class="{'buttonbgcolor': isAtive2}" @click="choose2">加菜</button>
+                </div>
+            </div>
+            <div class="foodlist">
+                <div class="foodlistHesder">
+                    <span class="shopname">深圳麦当劳红荔西路餐厅<i></i></span>             
+                </div>
+                <div class="foodlistcontent">
+                    <div class="fooddetail">
+                        <ul>
+                            <li class="detail" v-for="food in foodlist">
+                                <img>
+                                <span class="foodname">{{ food.c_name}}</span>
+                                <span class="foodprice">￥{{ food.piece }}</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="buttom">
+                        <div class="total">
+                            <span>合计</span>
+                            <span class="redcolor">￥{{ totalprice }}</span>
+                        </div> 
+                    </div>            
+                </div> 
+                        
+            </div>
+        </div>
     </div>
-  </div>
 </template>
 <script>
 import api from '@/api';
@@ -44,7 +47,13 @@ export default {
         return {
             isAtive1: false,
             isAtive2: true,
-            foodlist: []
+            foodlist: [{
+                [c_name]: '红烧猪蹄',
+                [c_price]: '48'
+            }, {
+                [c_name]: '红烧鱼',
+                [c_price]: '36'
+            }]
         };
     },
     computed: {
@@ -77,14 +86,15 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style>
+<style scoped>
 * {
     margin: 0;
     padding: 0;
 }
-.ordersuccess {
+.orderSuccess {
     padding:5px 10px;
     background:  #F8F8F8;
+    position: relative;
 }
 .orderHeader {
     width: 100%;
@@ -143,6 +153,17 @@ export default {
     padding: 3px;
     color: #999;
     text-align: center;   
+}
+.detail img {
+    width: 30px;
+    height: 30px;
+}
+.foodname, .foodprice {
+    margin-bottom: 10px;
+}
+.buttom {
+    width: 100%;
+    height: 20px;
 }
 .total {
     float: right;

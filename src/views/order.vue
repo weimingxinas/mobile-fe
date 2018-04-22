@@ -323,8 +323,12 @@ export default {
             this.paymentshow = false;
         },
         payDesc () {
-            if (this.totalnum > 0) {
-                this.listShow = true;
+            if (this.listShow === false) {
+                if (this.totalnum > 0) {
+                    this.listShow = true;
+                }
+            } else {
+                this.turnToOrderSucess();
             }
         },
         // sure () {
@@ -334,19 +338,14 @@ export default {
         //     this.paymentshow = false;
         // },
         empty () {
-            // for (let i = 0; i < this.selectFoods.length; i++) {
-            //     this.selectFoods[i]['c_num'] = 0;
-            // }
-            // this.selectFoods.forEach((food) => {
-            //     food['c_num'] = 0;
-            // });
             this.menu = {};
             this.totalnum = 0;
             this.listShow = false;
         },
         turnToOrderSucess () {
             api.orderList(this.menu).then(res => {
-                this.$route.push(`/orderSucess/${res.data.o_id}`);
+                let id = 123;
+                this.$router.push(`/orderSuccess/${id}`);
             }).catch();
         }
     },
