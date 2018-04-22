@@ -20,10 +20,10 @@
                 <div class="foodlistcontent">
                     <div class="fooddetail">
                         <ul>
-                            <li class="detail" v-for="food in foodlist">
+                            <li class="detail" v-for="food in foodslist">
                                 <img>
-                                <span class="foodname">{{ food.c_name}}</span>
-                                <span class="foodprice">￥{{ food.piece }}</span>
+                                <span class="foodname">{{ food.name}}</span>
+                                <span class="foodprice">￥{{ food.price }}</span>
                             </li>
                         </ul>
                     </div>
@@ -47,20 +47,20 @@ export default {
         return {
             isAtive1: false,
             isAtive2: true,
-            foodlist: [{
-                [c_name]: '红烧猪蹄',
-                [c_price]: '48'
+            foodslist: [{
+                name: '红烧猪蹄',
+                price: '48'
             }, {
-                [c_name]: '红烧鱼',
-                [c_price]: '36'
+                name: '红烧鱼',
+                price: '36'
             }]
         };
     },
     computed: {
         totalprice () {
             let total = 0;
-            for (let i = 0; i < this.foodlist.length; i++) {
-                total += this.foodlist[i].c_num * (this.foodlist[i].price * 100);
+            for (let i = 0; i < this.foodslist.length; i++) {
+                total += this.foodslist[i].c_num * (this.foodslist[i].price * 100);
             }
             return total / 100;
         }
