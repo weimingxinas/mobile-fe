@@ -18,18 +18,18 @@
               <span class="shopname">深圳麦当劳红荔西路餐厅<i></i></span>             
           </div>
           <div class="foodlistcontent">
-              <div class="fooddetail" v-for="">
+              <div class="fooddetail" v-for="food in foodlist">
                 <ul>
                     <li>
                         <img>
-                        <span>{{ }}</span>
-                        <span>￥{{ }}</span>
+                        <span>{{ food.c_name}}</span>
+                        <span>￥{{ food.piece }}</span>
                     </li>
                 </ul>
               </div>
               <div class="total">
                 <span>合计</span>
-                <span class="redcolor">￥{{ }}</span>
+                <span class="redcolor">￥{{ totalprice }}</span>
               </div>
           </div>         
       </div>
@@ -43,13 +43,24 @@ export default {
     data () {
         return {
             isAtive1: false,
-            isAtive2: true
+            isAtive2: true,
+            foodlist: []
         };
     },
+    computed: {
+        totalprice () {
+            let total = 0;
+            for (let i = 0; i < this.foodlist.length; i++) {
+                total += this.foodlist[i].c_num * (this.foodlist[i].price * 100);
+            }
+            return total / 100;
+        }
+    },
     created () {
-        const id = this.$router.params['o_id'];
-        api.getOrder(id).then(res => {
+        const id = this.$route.params['o_id'];
+        api.orderList(id).then(res => {
             console.log(res.data.data);
+            this.foodlist = res.data.data;
         });
     },
     methods: {
