@@ -21,9 +21,14 @@
                     <div class="fooddetail">
                         <ul>
                             <li class="detail" v-for="food in foodslist">
-                                <img>
-                                <span class="foodname">{{ food.name}}</span>
-                                <span class="foodprice">￥{{ food.price }}</span>
+                                <div class="word">
+                                    <span class="foodname">{{ food.name}}</span>
+                                    <span class="foodprice">￥{{ food.price }}</span>
+                                </div>
+                                <div class="foodimg">
+                                    <img>
+                                </div>
+                                
                             </li>
                         </ul>
                     </div>
@@ -144,7 +149,7 @@ export default {
     background: #ffda61;
 }
 .foodlist {
-    margin-top: 20px;
+    margin-top: 10px;
     width: 100%;
     background: #fff;
 }
@@ -152,11 +157,31 @@ export default {
     height: 30px;
     padding: 3px;
     color: #999;
-    text-align: center;   
+    text-align: center;
+    font-size: 14px;   
+}
+.foodimg {
+    width: 20%;
+    position: relative;
+}
+.fooddetail {
+    list-style-type: none;
+}
+.detail {
+    padding: 0 10px;
+}
+.word {
+    width: 80%;
+    text-align: left;
+    position: absolute;
+    margin-left: 30px;
+    padding-left: 5px;
+    font-size: 14px;
 }
 .detail img {
     width: 30px;
     height: 30px;
+    position: relative;
 }
 .foodname, .foodprice {
     margin-bottom: 10px;
