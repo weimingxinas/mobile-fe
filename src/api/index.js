@@ -9,6 +9,9 @@ export default {
         return axios.get(`${baseURL}/foodtype`);
     },
     orderList (params) {
-        return axios.post(`${baseURL}/food`, params);
+        return axios.post(`${baseURL}/order`, params);
+    },
+    getOrder (id) {
+        return axios.get(`${baseURL}/order/${id}`);
     }
 };

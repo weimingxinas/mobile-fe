@@ -72,7 +72,7 @@ export default {
     },
     created () {
         const id = this.$route.params['o_id'];
-        api.orderList(id).then(res => {
+        api.getOrder(id).then(res => {
             console.log(res.data.data);
             this.foodlist = res.data.data;
         });

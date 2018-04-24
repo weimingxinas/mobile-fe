@@ -113,12 +113,12 @@
                             <span class="now">￥{{ foodname.piece }}</span>
                             <div class="control">
                                 <transition name="move">
-                                    <div class="decrease" @click.stop.prevent="decrease(foodname, $event)">
+                                    <div class="decrease1" @click.stop.prevent="decrease(foodname, $event)">
                                         <i class="icon iconfont icon-offline"></i>                                       
                                     </div>
                                 </transition> 
-                                <div class="num" v-show="menu[foodname.c_id] > 0">{{ menu[foodname.c_id] }}</div>
-                                <div class="add" @click.stop.prevent="add(foodname, $event)">
+                                <div class="num1" v-show="menu[foodname.c_id] > 0">{{ menu[foodname.c_id] }}</div>
+                                <div class="add1" @click.stop.prevent="add(foodname, $event)">
                                     <i class="icon iconfont icon-addition_fill"></i>
                                 </div>
                             </div>
@@ -177,12 +177,12 @@
                         </div>
                         <div class="control">
                             <transition name="move">
-                                <div class="decrease" @click.stop.prevent="decrease(foodlist, $event)">
+                                <div class="decrease2" @click.stop.prevent="decrease(foodlist, $event)">
                                     <i class="icon iconfont icon-offline"></i>                                       
                                 </div>
                             </transition> 
-                            <div class="num" v-show="foodlist.c_num > 0">{{ foodlist.c_num }}</div>
-                            <div class="add" @click.stop.prevent="add(foodlist, $event)">
+                            <div class="num2" v-show="foodlist.c_num > 0">{{ foodlist.c_num }}</div>
+                            <div class="add2" @click.stop.prevent="add(foodlist, $event)">
                                 <i class="icon iconfont icon-addition_fill"></i>
                             </div>
                         </div>
@@ -343,9 +343,15 @@ export default {
             this.listShow = false;
         },
         turnToOrderSucess () {
-            api.orderList(this.menu).then(res => {
-                let id = 123;
-                this.$router.push(`/orderSuccess/${id}`);
+            const tid = this.$route.params.tableid;
+            const resid = this.$route.params.resid;
+            api.orderList({
+                menu: this.menu,
+                't_id': tid,
+                'res_id': resid
+            }).then(res => {
+                console.log(res);
+                this.$router.push(`/orderSuccess/${res.data.data['o_id']}`);
             }).catch();
         }
     },
@@ -356,9 +362,6 @@ export default {
             for (let i = 0; i < this.selectFoods.length; i++) {
                 total += this.selectFoods[i].c_num * (this.selectFoods[i].price * 100);
             }
-            // this.meun.forEach((food) => {
-            //     total += food.this.meun[foodname.c_id] * food.this.foodDetail[];
-            // });
             return total / 100;
         },
         selectFoods () {
@@ -414,7 +417,7 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style>
+<style scoped>
 .order {
     position: relative;
     height: 100%;
@@ -714,21 +717,53 @@ hr {
     line-height: 24px;
     float: right;
 }
-.decrease, .add {
+/* 页面点餐点击样式 */
+.decrease1, .add1 {
     display: inline-block;
-    padding: 6px;
+    padding: 5px;
 }
-.decrease i {
+.decrease1 i {
     font-size: 24px;
     color: #5ED14F;
     display: inline-block;
     font-weight: 500;
 }
-.add i {
+.add1 i {
     font-size: 24px;
     color: #5ED14F;
     display: inline-block;
     font-weight: 500;
+}
+.num1 {
+    display: inline-block;
+    padding: 5px;
+    font-size: 14px;
+    text-align: center;
+    color: rgb(147, 153, 159);
+    vertical-align: top;
+}
+.decrease2, .add2 {
+    display: inline-block;
+}
+ /* 购物车点击样式 */
+.decrease2 i {
+    font-size: 24px;
+    color: #5ED14F;
+    display: inline-block;
+    font-weight: 500;
+}
+.add2 i {
+    font-size: 24px;
+    color: #5ED14F;
+    display: inline-block;
+    font-weight: 500;
+}
+.num2 {
+    display: inline-block;
+    font-size: 14px;
+    text-align: center;
+    color: rgb(147, 153, 159);
+    vertical-align: top;
 }
 .move-enter-active, .move-leave-active {
     opacity: 1;
@@ -747,14 +782,6 @@ hr {
 .move-enter, .move-leave-to i {
     transform: rotate(360deg);
     transition: all .4s;
-}
-.num {
-    display: inline-block;
-    padding: 6px;
-    font-size: 16px;
-    text-align: center;
-    color: rgb(147, 153, 159);
-    vertical-align: top;
 }
 .content {
     position: fixed;
