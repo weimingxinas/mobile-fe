@@ -78,17 +78,16 @@
 
         
     <div class="tab">
-        <div class="tabItem">
+        <div class="tabItem" :class="{'tabline': tabActive === 1}" @click="tabActive = 1">
             <router-link to=''>点餐</router-link>
         </div>
-        <div class="tabItem">
+        <div class="tabItem" :class="{'tabline': tabActive === 2}" @click="tabActive = 2">
             <router-link to='#'>评价</router-link>
         </div>
-        <div class="tabItem">
+        <div class="tabItem" :class="{'tabline': tabActive === 3}" @click="tabActive = 3">
             <router-link to='#'>商家</router-link>
         </div>
     </div>
-    <hr>
     <div class="foodItem">
         <div class="leftNav">
             <ul>
@@ -210,6 +209,9 @@ export default {
             logoimg: '',
             detailShow: false,
             isActive: 0,
+            orderline: true,
+            ratingline: false,
+            shopline: false,
             evaluate: [{
                 word: '"服务好"'
             }, {
@@ -237,7 +239,8 @@ export default {
             listShow: false,
             paymentshow: false,
             // 商品总数量
-            totalnum: 0
+            totalnum: 0,
+            tabActive: 1
         };
     },
     props: {
@@ -581,10 +584,14 @@ export default {
     height: 35px;
     line-height: 40px;
     text-align: center;
+    border-bottom: 1px solid #ccc;
 }
 .tabItem {
     text-align:center;
     width: 33.3%;
+}
+.tabline {
+    border-bottom: 2px #ffda61 solid;
 }
 a {
     text-decoration:none;
@@ -600,7 +607,7 @@ hr {
 .foodItem{
     display: flex;
     position: absolute;
-    top: 165px;
+    top: 156px;
     bottom: 46px;
     width: 100%;
     background-color: #fff;
